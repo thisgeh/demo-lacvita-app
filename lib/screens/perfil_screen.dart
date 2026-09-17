@@ -21,7 +21,7 @@ class PerfilScreen extends StatelessWidget {
                 const CircleAvatar(
                   radius: 32,
                   backgroundColor: AppColors.blueLight,
-                  child: Icon(Icons.person_rounded, color: AppColors.blue, size: 34),
+                  backgroundImage: AssetImage('assets/images/donor_avatar.png'),
                 ),
                 const SizedBox(width: 16),
                 Column(

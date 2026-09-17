@@ -7,8 +7,24 @@ import 'coletas_screen.dart';
 /// Lista os agendamentos feitos pela doadora durante esta sessão de uso do
 /// app. Como os dados são mockados em memória (sem backend), essa lista é
 /// reiniciada sempre que o app é recarregado.
-class AgendamentosScreen extends StatelessWidget {
+class AgendamentosScreen extends StatefulWidget {
   const AgendamentosScreen({super.key});
+
+  @override
+  State<AgendamentosScreen> createState() => _AgendamentosScreenState();
+}
+
+class _AgendamentosScreenState extends State<AgendamentosScreen> {
+  // Abre a tela de novo agendamento e, ao voltar (ex.: após confirmar uma
+  // coleta), força esta lista a reconstruir e reler o MockData mais
+  // recente — sem isso, a lista ficava com os dados antigos até o usuário
+  // sair e voltar para a aba de novo.
+  Future<void> _novoAgendamento() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ColetasScreen()),
+    );
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +38,14 @@ class AgendamentosScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.add_rounded),
             tooltip: 'Novo agendamento',
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ColetasScreen()),
-              );
-            },
+            onPressed: _novoAgendamento,
           ),
           const SizedBox(width: 4),
         ],
       ),
       body: SafeArea(
         child: appointments.isEmpty
-            ? const _EmptyState()
+            ? _EmptyState(onAgendar: _novoAgendamento)
             : ListView(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
                 children: [
@@ -60,7 +72,8 @@ class AgendamentosScreen extends StatelessWidget {
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState();
+  final VoidCallback onAgendar;
+  const _EmptyState({required this.onAgendar});
 
   @override
   Widget build(BuildContext context) {
@@ -89,11 +102,7 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           ElevatedButton.icon(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ColetasScreen()),
-              );
-            },
+            onPressed: onAgendar,
             icon: const Icon(Icons.add_rounded),
             label: const Text('Agendar coleta'),
           ),

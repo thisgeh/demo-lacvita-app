@@ -68,12 +68,19 @@ class HomeScreen extends StatelessWidget {
             // agendamento, mostra um estado vazio convidando a agendar em
             // vez de uma data fixa (que ficaria no passado com o tempo).
             InkWell(
-              onTap: () {
-                Navigator.of(context).push(
+              onTap: () async {
+                await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => hasNext ? const AgendamentosScreen() : const ColetasScreen(),
                   ),
                 );
+                // Ao voltar dessa tela (ex.: após agendar uma coleta), força
+                // a Home a reconstruir e reler os dados mais recentes do
+                // MockData — sem isso, a tela ficava com o valor antigo em
+                // memória até o usuário trocar de aba manualmente.
+                if (context.mounted) {
+                  AppShellController.of(context)?.goTo(0);
+                }
               },
               borderRadius: BorderRadius.circular(18),
               child: Container(
@@ -124,30 +131,33 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 14),
 
-            Row(
-              children: [
-                Expanded(
-                  child: _ActionButton(
-                    icon: Icons.favorite_rounded,
-                    label: 'Quero Doar',
-                    color: AppColors.pink,
-                    onTap: () => AppShellController.of(context)?.goTo(1),
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: _ActionButton(
+                      icon: Icons.favorite_rounded,
+                      label: 'Quero Doar',
+                      color: AppColors.pink,
+                      onTap: () => AppShellController.of(context)?.goTo(1),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _ActionButton(
-                    icon: Icons.location_on_rounded,
-                    label: 'Encontrar ponto\nde coleta',
-                    color: AppColors.blue,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const PontosColetaScreen()),
-                      );
-                    },
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _ActionButton(
+                      icon: Icons.location_on_rounded,
+                      label: 'Encontrar ponto\nde coleta',
+                      color: AppColors.blue,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const PontosColetaScreen()),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 20),
 
@@ -259,6 +269,7 @@ class _ActionButton extends StatelessWidget {
           border: Border.all(color: AppColors.border),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: color, size: 26),
             const SizedBox(height: 8),
