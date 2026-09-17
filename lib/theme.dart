@@ -13,6 +13,7 @@ class AppColors {
   static const textGrey = Color(0xFF6B7280);
   static const border = Color(0xFFE3E6EC);
   static const success = Color(0xFF2E9E6B);
+  static const logoNavy = Color(0xFF213CA2);
 }
 
 ThemeData buildAppTheme() {

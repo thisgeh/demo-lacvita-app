@@ -14,15 +14,13 @@ class SplashScreen extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(flex: 2),
-              Container(
-                width: 96,
-                height: 96,
-                decoration: const BoxDecoration(
-                  color: AppColors.blueLight,
-                  shape: BoxShape.circle,
+              SizedBox(
+                width: 140,
+                height: 140,
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.contain,
                 ),
-                child: const Icon(Icons.favorite_rounded,
-                    color: AppColors.pink, size: 44),
               ),
               const SizedBox(height: 24),
               const Text(
@@ -30,7 +28,7 @@ class SplashScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 34,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.navy,
+                  color: AppColors.logoNavy,
                 ),
               ),
               const SizedBox(height: 8),
